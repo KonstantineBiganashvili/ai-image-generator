@@ -14,9 +14,58 @@ const CreatePost: React.FC = () => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
-  const generateImage = () => {};
+    if (form.prompt && form.photo) {
+      setLoading(true);
+
+      try {
+        const response = await fetch('http://localhost:8080/api/v1/post', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(form),
+        });
+
+        await response.json();
+        navigate('/');
+      } catch (error) {
+        alert(error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      alert('Please Enter A Prompt And Generate An Image!');
+    }
+  };
+
+  const generateImage = async () => {
+    if (form.prompt) {
+      try {
+        setGenerating(true);
+
+        const response = await fetch('http://localhost:8080/api/v1/dalle', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: form.prompt }),
+        });
+
+        const data = await response.json();
+
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
+      } catch (error) {
+        alert(error);
+      } finally {
+        setGenerating(false);
+      }
+    } else {
+      alert('Please Enter A Prompt!');
+    }
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [event.target.name]: event.target.value });
@@ -46,15 +95,15 @@ const CreatePost: React.FC = () => {
             name="name"
             placeholder="John Doe"
             value={form.name}
-            onchange={handleChange}
+            onChange={handleChange}
           />
           <FormField
             labelName="Prompt"
             type="prompt"
-            name="name"
+            name="prompt"
             placeholder="an astronaut lounging in a tropical resort in space, vaporwave"
             value={form.prompt}
-            onchange={handleChange}
+            onChange={handleChange}
             isSurpriseMe
             handleSurpriseMe={handleSurpriseMe}
           />

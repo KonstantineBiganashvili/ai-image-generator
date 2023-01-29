@@ -6,7 +6,7 @@ interface Props {
   name: string;
   placeholder: string;
   value: string;
-  onchange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isSurpriseMe?: boolean;
   handleSurpriseMe?: () => void;
 }
@@ -17,7 +17,7 @@ const FormField: React.FC<Props> = ({
   name,
   placeholder,
   value,
-  onchange,
+  onChange,
   isSurpriseMe,
   handleSurpriseMe,
 }) => {
@@ -46,7 +46,7 @@ const FormField: React.FC<Props> = ({
         name={name}
         placeholder={placeholder}
         value={value}
-        onChange={onchange}
+        onChange={onChange}
         required
         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#4649ff] focus:border-[#4649ff] outline-none block w-full p-3"
       />
